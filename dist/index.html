@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Getting Started</title>
+    <style>
+      html { height: 100%; }
+      body { margin: 0; overflow: hidden; height: 100%; }
+      #viewerDiv { margin: auto; height: 100%; width: 100%; padding: 0; }
+      canvas { display: block }
+      /* Define widget position according to its position settings. */
+      .top-widget { top: 10px; }
+      .bottom-widget { bottom: 10px; }
+      .left-widget { left: 10px; }
+      .right-widget { right: 10px; }
+      #description, .text {
+	  z-index: 1;
+	  color: #eee;
+	  font: 16px 'Lucida Grande',sans-serif;
+	  max-width: 40%;
+	  background: #1a1a1a;
+	  opacity: 0.8;
+	  padding: 10px;
+      }
+      #description {
+	  position: absolute;
+	  top: 10px;
+	  right: 10px;
+	  overflow: hidden;
+      }
+      #description p, #description ul { margin: 0px; }
+      /* Widgets */
+      #widgets-navigation {
+	  position: absolute;
+	  z-index: 10;
+
+	  display: flex;
+	  align-items: center;
+      }
+      .column-widget.top-widget {
+	  flex-direction: column;
+      }
+      .column-widget.bottom-widget {
+	  flex-direction: column-reverse;
+      }
+      .row-widget.left-widget {
+	  flex-direction: row;
+      }
+      .row-widget.right-widget {
+	  flex-direction: row-reverse;
+      }
+      #widgets-navigation.column-widget.top-widget > *:not(:first-child),
+      #widgets-navigation.column-widget.bottom-widget > *:not(:last-child)  {
+	  margin-top: 5px;
+      }
+      #widgets-navigation.column-widget.top-widget > *:not(:last-child),
+      #widgets-navigation.column-widget.bottom-widget > *:not(:first-child)  {
+	  margin-bottom: 5px;
+      }
+      #widgets-navigation.row-widget.left-widget > *:not(:first-child),
+      #widgets-navigation.row-widget.right-widget > *:not(:last-child)  {
+	  margin-left: 5px;
+      }
+      #widgets-navigation.row-widget.left-widget > *:not(:last-child),
+      #widgets-navigation.row-widget.right-widget > *:not(:first-child)  {
+	  margin-right: 5px;
+      }
+      #widgets-navigation .widget-button-bar {
+	  display: flex;
+      }
+      #widgets-navigation.column-widget.top-widget .widget-button-bar {
+	  flex-direction: column;
+      }
+      #widgets-navigation.column-widget.bottom-widget .widget-button-bar {
+	  flex-direction: column-reverse;
+      }
+      #widgets-navigation.row-widget.left-widget .widget-button-bar {
+	  flex-direction: row;
+      }
+      #widgets-navigation.row-widget.right-widget .widget-button-bar {
+	  flex-direction: row-reverse;
+      }
+      #widgets-navigation .widget-button {
+	  background-color: #313336bb;
+	  border: 1px solid #222222;
+	  padding: 0;
+
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
+
+	  font-weight: 900;
+	  font-size: 15px;
+      }
+      #widgets-navigation .widget-button:hover {
+	  cursor: pointer;
+      }
+      #widgets-navigation .widget-button:active {
+	  background-color: #222222;
+      }
+      #widgets-navigation .widget-button-bar > .widget-button {
+	  height: 30px;
+	  width: 30px;
+
+	  color: white;
+      }
+      #widgets-navigation.column-widget.top-widget .widget-button-bar > .widget-button:first-child:not(:only-child),
+      #widgets-navigation.column-widget.bottom-widget .widget-button-bar > .widget-button:last-child:not(:only-child) {
+	  border-radius: 7px 7px 0 0;
+      }
+      #widgets-navigation.column-widget.top-widget .widget-button-bar > .widget-button:last-child:not(:only-child),
+      #widgets-navigation.column-widget.bottom-widget .widget-button-bar > .widget-button:first-child:not(:only-child) {
+	  border-radius: 0 0 7px 7px;
+      }
+      #widgets-navigation.column-widget.top-widget .widget-button-bar > .widget-button:not(:last-child),
+      #widgets-navigation.column-widget.bottom-widget .widget-button-bar > .widget-button:not(:first-child) {
+	  margin-bottom: -1px;
+      }
+      #widgets-navigation.row-widget.left-widget .widget-button-bar > .widget-button:first-child:not(:only-child),
+      #widgets-navigation.row-widget.right-widget .widget-button-bar > .widget-button:last-child:not(:only-child) {
+	  border-radius: 7px 0 0 7px;
+      }
+      #widgets-navigation.row-widget.left-widget .widget-button-bar > .widget-button:last-child:not(:only-child),
+      #widgets-navigation.row-widget.right-widget .widget-button-bar > .widget-button:first-child:not(:only-child) {
+	  border-radius: 0 7px 7px 0;
+      }
+      #widgets-navigation.row-widget.left-widget .widget-button-bar > .widget-button:not(:last-child),
+      #widgets-navigation.row-widget.right-widget .widget-button-bar > .widget-button:not(:first-child) {
+	  margin-right: -1px;
+      }
+      #widgets-navigation .widget-button-bar > .widget-button:only-child {
+	  border-radius: 7px;
+      }
+      #zoom-button-bar {
+	  display: flex;
+      }
+      #widgets-navigation.column-widget #zoom-button-bar {
+	  flex-direction: column;
+      }
+      #widgets-navigation.row-widget #zoom-button-bar {
+	  flex-direction: row-reverse;
+      }
+      #widgets-navigation.column-widget #zoom-button-bar > .widget-button:first-child:not(:only-child) {
+	  border-radius: 7px 7px 0 0;
+      }
+      #widgets-navigation.column-widget #zoom-button-bar > .widget-button:last-child:not(:only-child) {
+	  border-radius: 0 0 7px 7px;
+      }
+      #widgets-navigation.column-widget.bottom-widget #zoom-button-bar > .widget-button:not(:last-child) {
+	  margin-top: 0;
+	  margin-bottom: -1px;
+      }
+      #widgets-navigation.row-widget #zoom-button-bar > .widget-button:first-child:not(:only-child) {
+	  border-radius: 0 7px 7px 0;
+      }
+      #widgets-navigation.row-widget #zoom-button-bar > .widget-button:last-child:not(:only-child) {
+	  border-radius: 7px 0 0 7px;
+      }
+      #widgets-navigation.row-widget.left-widget #zoom-button-bar > .widget-button:not(:last-child) {
+	  margin-right: 0;
+	  margin-left: -1px;
+      }
+      #widgets-navigation #zoom-button-bar > .widget-button:only-child {
+	  border-radius: 7px;
+      }
+      #widgets-navigation .widget-zoom-button-logo {
+	  width: 50%;
+	  height: 50%;
+
+	  background-image: url('https://raw.githubusercontent.com/iTowns/iTowns2-sample-data/master/GUI/widget-logo.svg');
+	  background-size: 100%;
+      }
+      #widgets-navigation #zoom-out-logo {
+	  background-position: center -100%;
+      }
+      #widgets-navigation #compass {
+	  width: 60px;
+	  height: 60px;
+
+	  border-radius: 50%;
+
+	  background-image: url('https://raw.githubusercontent.com/iTowns/iTowns2-sample-data/master/GUI/compass.svg');
+	  background-repeat: no-repeat;
+	  background-size: auto 90%;
+	  background-position: center;
+      }
+
+      #widgets-searchbar { position: absolute; z-index: 10; }
+      #widgets-searchbar > form { display: flex; flex-direction: column; margin: 0; border-radius: 7px; }
+      #widgets-searchbar.top-widget > form { flex-direction: column; }
+      #widgets-searchbar.bottom-widget > form { flex-direction: column-reverse; }
+      #widgets-searchbar > form.focus { box-shadow: 0 0 10px #222222;}
+      #widgets-searchbar:not(.bottom-widget) form > *:last-child:not(:only-child), #widgets-searchbar.bottom-widget form > *:first-child:not(:only-child) { border-radius: 0 0 7px 7px; }
+      #widgets-searchbar:not(.bottom-widget) form > *:first-child:not(:only-child), #widgets-searchbar.bottom-widget form > *:last-child:not(:only-child) { border-radius: 7px 7px 0 0; }
+      #widgets-searchbar form > *:only-child { border-radius: 7px; }
+      #widgets-searchbar:not(.bottom-widget) form > *:not(:first-child):not(:last-child) { border-bottom: none; }
+      #widgets-searchbar.bottom-widget form > *:not(:first-child):not(:last-child) { border-top: none; }
+      #widgets-searchbar form > * {
+	  box-sizing: border-box;
+	  width: 100%;
+	  padding: 0 10px;
+	  background-color: #313336bb;
+	  border: 1px solid #222222;
+	  color: #ffffff;
+	  font-family: Arial;
+      }
+      #widgets-searchbar form > input::placeholder { color: #ffffff80; }
+      #widgets-searchbar form > input:focus { outline: none !important; }
+      #widgets-searchbar form > div { display: flex; align-items: center; }
+      #widgets-searchbar form > div.active { background-color: #222222; }
+      #widgets-searchbar form > div:hover { cursor: pointer; }
+      #widgets-searchbar form > div > p { margin: 8px 0; }
+    </style>
+  </head>
+  <body>
+    <div id="viewerDiv"></div>
+    <div id="description">
+      <p><b>Feature Information:</b></p>
+      <div id="featureInfo"></div>
+    </div>
+    <script src="main.js"></script>
+  </body>
+</html>
