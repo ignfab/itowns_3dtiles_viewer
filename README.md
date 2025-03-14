@@ -3,8 +3,7 @@
 ```
 npm install
 npx webpack
-cd dist
-python3 -m http.server
+python3 -m http.server -d dist
 ```
 
 Test is on http://localhost:8000
