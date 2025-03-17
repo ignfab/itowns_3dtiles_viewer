@@ -136,3 +136,16 @@ view.addLayer(tilesLayer).then((layer) => {
     window.addEventListener('click',
         (event) => fillHTMLWithPickingInfo(event, pickingArgs), false);
 });
+
+// paint building white
+tilesLayer.addEventListener('load-model', m => {
+    m.scene.traverse((o) => {
+        if (o.isMesh) {
+            const material = o.material;
+            material.color = new THREE.Color('Snow');
+            material.needsUpdate = true;
+        }
+    }
+    )
+}
+);
