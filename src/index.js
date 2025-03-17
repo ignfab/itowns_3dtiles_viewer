@@ -11,6 +11,9 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { AmbientLight, PMREMGenerator } from 'three';
 import { fillHTMLWithPickingInfo, zoomToLayer } from './3dTilesHelper';
 
+// UPDATE THIS TILESET URL
+const tileset_url = "https://domain.com/idf_roofer/data/tileset.json"
+
 var positionOnGlobe = {
     coord: new itowns.Coordinates('EPSG:4326', 2.349804, 48.853054),
     range: 650,
@@ -24,9 +27,11 @@ var view = new itowns.GlobeView(viewerDiv, positionOnGlobe);
 itowns.enableMeshoptDecoder(MeshoptDecoder);
 
 // Interface
+
 // Navigation menu
 const navbar = new widgets.Navigation(view);
-// Example on how to add a new button to the navbar menu
+
+// Example of adding a new buttons to the navbar menu
 navbar.addButton(
     'rotate-up',
     '<p style="font-size: 20px">&#8595</p>',
@@ -57,10 +62,12 @@ navbar.addButton(
     'reset position',
     () => { view.controls.lookAtCoordinate(positionOnGlobe) },
 );
+
 // Search bar
 function lookAtCoordinate(coordinates) {
     view.controls.lookAtCoordinate({ coord: coordinates, range: 20000, tilt: 45, heading: 0 });
 }
+
 // Define options for geocoding service that should be used by the searchbar.
 const geocodingOptions = {
     url: new URL(
@@ -69,9 +76,9 @@ const geocodingOptions = {
     ),
     // As specified in the doc (http://www.itowns-project.org/itowns/docs/#api/Widgets/Searchbar),
     // the parser method must parse the geocoding service response into a Map object.
-    // For each item of this Map, the key is a string that is displayed in the suggestions bellow
-    // the searchbar, and the value is whatever
-    // the user wants. The value is the parameter that is passed to the `onSelected` method when a
+    // For each item of this Map, the key is a string that is displayed in the suggestions below
+    // the searchbar, and the value is whatever the user wants.
+    // The value is the parameter that is passed to the `onSelected` method when a
     // suggestion is clicked. Here, we se the value as the `Coordinates` associated to the location.
     parser: (response) => {
         const map = new Map();
@@ -82,6 +89,7 @@ const geocodingOptions = {
     },
     onSelected: lookAtCoordinate,
 }
+
 // Create the searchbar
 const searchbar = new widgets.Searchbar(view, geocodingOptions, {
     // We want to display at maximum 15 location suggestions when typing the searchbar.
@@ -90,7 +98,7 @@ const searchbar = new widgets.Searchbar(view, geocodingOptions, {
 });
 
 
-// Add ortho layer
+// Add ortho layer with pyramid details
 itowns.Fetcher.json('Ortho.json').then((config) => {
     const colorLayer = new itowns.ColorLayer('Ortho', {
         ...config,
@@ -99,7 +107,7 @@ itowns.Fetcher.json('Ortho.json').then((config) => {
     view.addLayer(colorLayer);
 });
 
-// Add elevation layer
+// Add elevation layer with pyramid details
 function addElevationLayerFromConfig(config) {
     config.source = new itowns.WMTSSource(config.source);
     var elevationLayer = new itowns.ElevationLayer(config.id, config);
@@ -107,8 +115,8 @@ function addElevationLayerFromConfig(config) {
 }
 itowns.Fetcher.json('IGN_MNT_HIGHRES.json').then(addElevationLayerFromConfig);
 
-// Create 3Dtiles layer
-const source = new itowns.OGC3DTilesSource({ url: "https://domain.com/idf_roofer/data/tileset.json" });
+// Create buildings 3Dtiles layer
+const source = new itowns.OGC3DTilesSource({ url: tileset_url });
 const tilesLayer = new itowns.OGC3DTilesLayer('3DTiles', {
     source,
     pntsSizeMode: itowns.PNTS_SIZE_MODE.ATTENUATED
@@ -125,6 +133,7 @@ pmremGenerator.dispose();
 const light = new AmbientLight(0x404040, 40);
 view.scene.add(light);
 
+// Args for click on buildings
 const pickingArgs = {
     htmlDiv: document.getElementById('featureInfo'),
     view,
