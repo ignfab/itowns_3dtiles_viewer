@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>Building 3D Tiles example</title>
+  <title>Building 3D Tiles Itowns</title>
   <style>
     html {
       height: 100%;
@@ -339,10 +339,30 @@
     #widgets-searchbar form>div>p {
       margin: 8px 0;
     }
+
+    .corner-ribbon {
+      width: 150px;
+      background: red;
+      color: white;
+      text-align: center;
+      font-weight: bold;
+      font-family: Arial, Helvetica, sans-serif;
+      position: fixed;
+      top: 25px;
+      /* right: -40px;
+      transform: rotate(45deg); */
+      left: -40px; /* left side instead of right */
+      transform: rotate(-45deg); /* rotate the other direction */
+      z-index: 1000;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      font-size: 12px;
+      padding: 5px 0;
+    }
   </style>
 </head>
 
 <body>
+  <div class="corner-ribbon">Beta</div>
   <div id="viewerDiv"></div>
   <div id="description">
     <p><b>Feature Information:</b></p>
