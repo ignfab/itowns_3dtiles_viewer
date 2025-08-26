@@ -15,7 +15,10 @@ import { fillHTMLWithPickingInfo, zoomToLayer } from './3dTilesHelper';
 const tileset_url = "https://domain.com/idf_roofer/data/tileset.json"
 
 var positionOnGlobe = {
+    // PARIS
     coord: new itowns.Coordinates('EPSG:4326', 2.349804, 48.853054),
+    // LYON
+    // coord: new itowns.Coordinates('EPSG:4326', 4.853799, 45.761171),
     range: 650,
     tilt: 32,
     heading: 8.30
