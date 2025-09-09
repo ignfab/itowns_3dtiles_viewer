@@ -146,11 +146,19 @@ const pickingArgs = {
 
 // Add 3Dtiles layer to our view
 view.addLayer(tilesLayer).then((layer) => {
-    window.addEventListener('click',
-        (event) => {
+    let lastClick = null;
+    window.addEventListener('pointerdown', () => {
+        lastClick = Date.now();
+    }, false);
+
+    window.addEventListener('pointerup', (event) => {
+        if (!lastClick) return;
+        if (Date.now() - lastClick < 400) { // Absolute magic value
             fillHTMLWithPickingInfo(event, pickingArgs);
             hightlight(event, pickingArgs);
-        }, false);
+        }
+        lastClick = null;
+    }, false);
 });
 
 // paint building white

@@ -43,8 +43,13 @@ export function hightlight(event, pickingArg) {
             }
             setFeatureId(object.material, featId);
             lastHighlightedObject = object;
-            view.notifyChange();
+            view.notifyChange(layer);
         });
+    } else {
+        if (lastHighlightedObject) {
+            setFeatureId(lastHighlightedObject.material, -1);
+            view.notifyChange(layer);
+        }
     }
 }
 
