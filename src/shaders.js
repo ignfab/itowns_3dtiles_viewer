@@ -4,7 +4,7 @@ import { Color } from 'three';
 export function patchShader(material,shader) {
     shader.uniforms = {
         featureId: { value: -1.0 },
-        featureColor: { value: new Color('Red').convertSRGBToLinear() },
+        featureColor: { value: new Color('Yellow').convertSRGBToLinear() },
         ...shader.uniforms,
     };
     shader.vertexShader = `
