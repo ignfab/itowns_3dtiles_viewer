@@ -1,6 +1,57 @@
 import * as itowns from 'itowns';
 import { createHTMLListFromObject } from './gui';
-import { MathUtils, Vector3 } from 'three';
+import { MathUtils, Vector3, Triangle } from 'three';
+import { setFeatureId } from './shaders';
+
+let lastHighlightedObject = null;
+
+// Copied straight from itowns. Shall be exposed in OGC3DTilesLayer...
+export async function getFeatures(intersection) {
+    const { point, object, face, faceIndex } = intersection;
+    const { meshFeatures } = object.userData;
+
+    const barycoord = new Vector3();
+    if (face) {
+        const position = object.geometry.getAttribute('position');
+        const triangle = new Triangle().setFromAttributeAndIndices(
+            position,
+            face.a,
+            face.b,
+            face.c,
+        );
+        triangle.a.applyMatrix4(object.matrixWorld);
+        triangle.b.applyMatrix4(object.matrixWorld);
+        triangle.c.applyMatrix4(object.matrixWorld);
+        triangle.getBarycoord(point, barycoord);
+    } else {
+        barycoord.set(0, 0, 0);
+    }
+
+    return meshFeatures.getFeaturesAsync(faceIndex, barycoord);
+}
+
+export function hightlight(event, pickingArg) {
+    const { view, layer } = pickingArg;
+    const intersections = view.pickObjectsAt(event, 5, layer);
+    const intersection = intersections[0];
+    if (intersection) {
+        const { object } = intersection;
+
+        getFeatures(intersection).then((featId) => {
+            if (lastHighlightedObject) {
+                setFeatureId(lastHighlightedObject.material, -1);
+            }
+            setFeatureId(object.material, featId);
+            lastHighlightedObject = object;
+            view.notifyChange(layer);
+        });
+    } else {
+        if (lastHighlightedObject) {
+            setFeatureId(lastHighlightedObject.material, -1);
+            view.notifyChange(layer);
+        }
+    }
+}
 
 export function fillHTMLWithPickingInfo(event, pickingArg) {
     const { htmlDiv, view, layer } = pickingArg;

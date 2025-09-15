@@ -9,7 +9,8 @@ import * as THREE from 'three';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { AmbientLight, PMREMGenerator } from 'three';
-import { fillHTMLWithPickingInfo, zoomToLayer } from './3dTilesHelper';
+import { fillHTMLWithPickingInfo, hightlight } from './3dTilesHelper';
+import { patchShader } from './shaders';
 
 // UPDATE THIS TILESET URL
 const tileset_url = "https://domain.com/idf_roofer/data/tileset.json"
@@ -145,8 +146,19 @@ const pickingArgs = {
 
 // Add 3Dtiles layer to our view
 view.addLayer(tilesLayer).then((layer) => {
-    window.addEventListener('click',
-        (event) => fillHTMLWithPickingInfo(event, pickingArgs), false);
+    let lastClick = null;
+    window.addEventListener('pointerdown', () => {
+        lastClick = Date.now();
+    }, false);
+
+    window.addEventListener('pointerup', (event) => {
+        if (!lastClick) return;
+        if (Date.now() - lastClick < 400) { // Absolute magic value
+            fillHTMLWithPickingInfo(event, pickingArgs);
+            hightlight(event, pickingArgs);
+        }
+        lastClick = null;
+    }, false);
 });
 
 // paint building white
@@ -155,9 +167,10 @@ tilesLayer.addEventListener('load-model', m => {
         if (o.isMesh) {
             const material = o.material;
             material.color = new THREE.Color('Snow');
-            material.needsUpdate = true;
+            material.onBeforeCompile = (shader) => {
+                patchShader(material, shader);
+            }
         }
-    }
-    )
+    });
 }
 );
